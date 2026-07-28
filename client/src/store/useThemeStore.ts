@@ -19,7 +19,7 @@ interface ThemeStore {
 }
 
 function getSystemTheme(): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'dark';
+  if (typeof window === 'undefined') return 'light';
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
@@ -34,7 +34,7 @@ function applyTheme(resolved: 'light' | 'dark'): void {
 }
 
 export const useThemeStore = create<ThemeStore>((set) => {
-  const savedTheme = storage.get<Theme>(STORAGE_KEY, 'dark');
+  const savedTheme = storage.get<Theme>(STORAGE_KEY, 'light');
   const resolved = resolveTheme(savedTheme);
 
   // Apply on initialization
