@@ -146,7 +146,7 @@ export const HomeDashboard = memo(function HomeDashboard() {
             className="flex items-center justify-between p-3.5 rounded-xl bg-surface-50/70 hover:bg-surface-100/80 transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2 rounded-lg bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-300 border border-primary-300/60 dark:border-primary-700/60 shrink-0">
+              <div className="p-2 rounded-lg bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800 shrink-0">
                 <BookOpen size={16} />
               </div>
               <div className="min-w-0">

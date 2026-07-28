@@ -187,7 +187,7 @@ export const Sidebar = memo(function Sidebar({ onOpenSearch }: SidebarProps) {
             isCollapsed && 'justify-center p-2'
           )}
         >
-          <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 font-bold flex items-center justify-center text-xs border border-primary-300 dark:border-primary-700 shrink-0">
+          <div className="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300 font-bold flex items-center justify-center text-xs border border-primary-200 dark:border-primary-800 shrink-0">
             {initialLetter}
           </div>
 
