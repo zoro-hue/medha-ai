@@ -27,24 +27,27 @@ import { staggerContainer, staggerItem } from '@/animations/variants';
 
 const cardVariants = {
   initial: (dir: number) => ({
-    x: dir > 0 ? 180 : -180,
-    y: 10,
-    rotateY: dir > 0 ? 25 : -25,
-    scale: 0.92,
+    x: dir > 0 ? 220 : -220,
+    y: 16,
+    rotateY: dir > 0 ? 36 : -36,
+    rotateX: -6,
+    scale: 0.85,
     opacity: 0,
   }),
   animate: {
     x: 0,
     y: 0,
     rotateY: 0,
+    rotateX: 0,
     scale: 1,
     opacity: 1,
   },
   exit: (dir: number) => ({
-    x: dir > 0 ? -180 : 180,
-    y: -10,
-    rotateY: dir > 0 ? -25 : 25,
-    scale: 0.92,
+    x: dir > 0 ? -220 : 220,
+    y: -16,
+    rotateY: dir > 0 ? -36 : 36,
+    rotateX: 6,
+    scale: 0.85,
     opacity: 0,
   }),
 };
@@ -288,7 +291,7 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               animate="animate"
               exit="exit"
               transition={{
-                duration: 0.35,
+                duration: 0.55,
                 ease: [0.16, 1, 0.3, 1],
               }}
               drag="x"
@@ -306,7 +309,7 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               {/* 3D Flip Container */}
               <motion.div
                 animate={{ rotateY: flashcard.isFlipped ? 180 : 0 }}
-                transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
+                transition={{ duration: 0.65, ease: [0.25, 1, 0.5, 1] }}
                 style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
                 className="relative w-full min-h-[280px] md:min-h-[320px]"
               >

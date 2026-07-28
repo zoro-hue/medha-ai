@@ -55,13 +55,58 @@ function ViewSkeleton() {
   );
 }
 
+import { useRef, useEffect } from 'react';
+import type { ViewMode } from '@/types';
+
+const VIEW_ORDER: ViewMode[] = [
+  'home',
+  'input',
+  'flashcards',
+  'quiz',
+  'summary',
+  'analytics',
+  'history',
+];
+
+const spatialViewVariants = {
+  initial: (isGoingDown: boolean) => ({
+    y: isGoingDown ? 140 : -140,
+    rotateX: isGoingDown ? -18 : 18,
+    scale: 0.93,
+    opacity: 0,
+  }),
+  animate: {
+    y: 0,
+    rotateX: 0,
+    scale: 1,
+    opacity: 1,
+  },
+  exit: (isGoingDown: boolean) => ({
+    y: isGoingDown ? -140 : 140,
+    rotateX: isGoingDown ? 18 : -18,
+    scale: 0.93,
+    opacity: 0,
+  }),
+};
+
 function AppContent() {
   const { viewMode, isGenerating } = useStudyStore();
   const { cancel } = useGenerate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hasLaunched, setHasLaunched] = useState(false);
 
+  const prevViewModeRef = useRef<ViewMode>(viewMode);
+  const prevViewMode = prevViewModeRef.current;
+
   useKeyboardShortcuts();
+
+  const prevIndex = VIEW_ORDER.indexOf(prevViewMode);
+  const currIndex = VIEW_ORDER.indexOf(viewMode);
+  const isGoingDown = currIndex >= prevIndex;
+
+  useEffect(() => {
+    prevViewModeRef.current = viewMode;
+  }, [viewMode]);
 
   const renderView = () => {
     switch (viewMode) {
@@ -128,18 +173,21 @@ function AppContent() {
           <Sidebar onOpenSearch={() => setIsSearchOpen(true)} />
 
           {/* Main Content View Container - Isolated Scroll Area */}
-          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8">
+          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8" style={{ perspective: 1200 }}>
             <div className="py-8 md:py-12 min-h-full">
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" custom={isGoingDown}>
                 <motion.div
                   key={viewMode}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  custom={isGoingDown}
+                  variants={spatialViewVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   transition={{
-                    duration: 0.2,
-                    ease: 'easeOut',
+                    duration: 0.55,
+                    ease: [0.16, 1, 0.3, 1],
                   }}
+                  style={{ transformStyle: 'preserve-3d', willChange: 'transform, opacity' }}
                 >
                   {renderView()}
                 </motion.div>
