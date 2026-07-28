@@ -221,7 +221,8 @@ function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onEx
         'group relative p-4 rounded-xl',
         'bg-surface-50 border border-surface-border',
         'hover:shadow-md transition-all duration-200',
-        'cursor-pointer'
+        'cursor-pointer',
+        showMenu && 'z-30'
       )}
       onClick={onRestore}
       whileHover={{ y: -1 }}
@@ -279,7 +280,10 @@ function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onEx
         <div className="relative" ref={menuRef} onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1.5 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-surface-200/60 opacity-0 group-hover:opacity-100 transition-all"
+            className={cn(
+              'p-1.5 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-surface-200/60 transition-all',
+              showMenu ? 'opacity-100 bg-surface-200/60 text-text-primary' : 'opacity-0 group-hover:opacity-100'
+            )}
             aria-label="Session actions"
           >
             <MoreHorizontal size={16} />
@@ -288,37 +292,38 @@ function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onEx
           <AnimatePresence>
             {showMenu && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                transition={{ duration: 0.15 }}
                 className={cn(
-                  'absolute right-0 top-8 z-50 w-40',
+                  'absolute right-0 top-9 z-50 w-44',
                   'bg-surface-0 border border-surface-border',
-                  'rounded-xl shadow-lg overflow-hidden'
+                  'rounded-xl shadow-xl overflow-hidden py-1'
                 )}
               >
                 <button
                   onClick={() => { setIsEditing(true); setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-100 transition-colors"
                 >
                   <Edit3 size={14} /> Rename
                 </button>
                 <button
                   onClick={() => { onDuplicate(); setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-100 transition-colors"
                 >
                   <Copy size={14} /> Duplicate
                 </button>
                 <button
                   onClick={() => { onExport(); setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-100 transition-colors"
                 >
                   <FileJson size={14} /> Export JSON
                 </button>
-                <div className="border-t border-surface-border" />
+                <div className="my-1 border-t border-surface-border" />
                 <button
                   onClick={() => { onDelete(); setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                 >
                   <Trash2 size={14} /> Delete
                 </button>
