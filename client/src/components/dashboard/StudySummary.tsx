@@ -65,7 +65,7 @@ export const StudySummary = memo(function StudySummary() {
           <Layers size={16} className="text-primary-500" /> Structural Concept Diagram
         </h3>
         <div className="flex flex-wrap items-center justify-center gap-3 py-4 bg-surface-0 rounded-xl border border-surface-border/60 px-4">
-          <span className="px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-950/40 text-xs font-bold text-primary-600 dark:text-primary-400 border border-primary-500/20">
+          <span className="px-3 py-1.5 rounded-lg bg-primary-100 dark:bg-primary-900 text-xs font-bold text-primary-700 dark:text-primary-300 border border-primary-300 dark:border-primary-700">
             {material.title}
           </span>
           <span className="text-text-tertiary font-mono">→</span>
@@ -77,7 +77,7 @@ export const StudySummary = memo(function StudySummary() {
             {material.flashcards.length} Flashcard Stack
           </span>
           <span className="text-text-tertiary font-mono">→</span>
-          <span className="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-xs font-semibold text-emerald-600 border border-emerald-500/20">
+          <span className="px-3 py-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-xs font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
             Mastery Goal
           </span>
         </div>
@@ -91,8 +91,8 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary-50 dark:bg-primary-950/60 border border-primary-500/20 flex items-center justify-center">
-              <Lightbulb size={16} className="text-primary-600 dark:text-primary-400" />
+            <div className="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900 border border-primary-300/80 dark:border-primary-700/60 flex items-center justify-center">
+              <Lightbulb size={16} className="text-primary-700 dark:text-primary-300" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Key Principles</h3>
           </div>
@@ -112,8 +112,8 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-500/20 flex items-center justify-center">
-              <AlertTriangle size={16} className="text-rose-600 dark:text-rose-400" />
+            <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900 border border-rose-300/80 dark:border-rose-700/60 flex items-center justify-center">
+              <AlertTriangle size={16} className="text-rose-700 dark:text-rose-300" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Common Misconceptions</h3>
           </div>
@@ -133,8 +133,8 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/20 flex items-center justify-center">
-              <BookOpen size={16} className="text-emerald-600 dark:text-emerald-400" />
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900 border border-emerald-300/80 dark:border-emerald-700/60 flex items-center justify-center">
+              <BookOpen size={16} className="text-emerald-700 dark:text-emerald-300" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Revision Tips</h3>
           </div>
@@ -154,8 +154,8 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-500/20 flex items-center justify-center">
-              <GitBranch size={16} className="text-amber-600 dark:text-amber-400" />
+            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900 border border-amber-300/80 dark:border-amber-700/60 flex items-center justify-center">
+              <GitBranch size={16} className="text-amber-800 dark:text-amber-300" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Interactive Topic Map</h3>
           </div>

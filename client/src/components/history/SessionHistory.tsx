@@ -341,7 +341,7 @@ function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onEx
                 <div className="my-1 border-t border-surface-border" />
                 <button
                   onClick={() => { onDelete(); setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950 transition-colors"
                 >
                   <Trash2 size={14} /> Delete
                 </button>

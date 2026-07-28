@@ -151,7 +151,7 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
             className={cn(
               'p-2 rounded-lg text-text-secondary transition-colors',
               'hover:bg-surface-200/60 hover:text-text-primary',
-              flashcard.isShuffled && 'text-primary-500 bg-primary-50 dark:bg-primary-900/30'
+              flashcard.isShuffled && 'text-primary-600 dark:text-primary-300 bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700'
             )}
             aria-label={flashcard.isShuffled ? 'Unshuffle cards' : 'Shuffle cards'}
             title="Shuffle deck"
@@ -484,10 +484,10 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               );
             }}
             className={cn(
-              'p-2.5 rounded-xl transition-colors',
+              'p-2.5 rounded-xl transition-colors border',
               isBookmarked
-                ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/30'
-                : 'text-text-tertiary hover:text-amber-500 hover:bg-surface-50'
+                ? 'text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950 border-amber-300 dark:border-amber-700'
+                : 'text-text-tertiary border-transparent hover:text-amber-500 hover:bg-surface-50'
             )}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.85 }}
@@ -506,10 +506,10 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               );
             }}
             className={cn(
-              'p-2.5 rounded-xl transition-colors',
+              'p-2.5 rounded-xl transition-colors border',
               isMastered
-                ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 ring-2 ring-emerald-500/30'
-                : 'text-text-tertiary hover:text-emerald-500 hover:bg-surface-50'
+                ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 border-emerald-300 dark:border-emerald-700'
+                : 'text-text-tertiary border-transparent hover:text-emerald-500 hover:bg-surface-50'
             )}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.85 }}

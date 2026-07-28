@@ -163,7 +163,7 @@ export const Sidebar = memo(function Sidebar({ onOpenSearch }: SidebarProps) {
                 {isActive && (
                   <motion.div
                     layoutId="nav-active"
-                    className="absolute inset-0 rounded-xl bg-primary-50 dark:bg-primary-950/50 border border-primary-500/15"
+                    className="absolute inset-0 rounded-xl bg-primary-100/80 dark:bg-primary-950 border border-primary-300 dark:border-primary-700"
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                   />
                 )}
@@ -187,7 +187,7 @@ export const Sidebar = memo(function Sidebar({ onOpenSearch }: SidebarProps) {
             isCollapsed && 'justify-center p-2'
           )}
         >
-          <div className="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 font-bold flex items-center justify-center text-xs border border-primary-500/30 shrink-0">
+          <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 font-bold flex items-center justify-center text-xs border border-primary-300 dark:border-primary-700 shrink-0">
             {initialLetter}
           </div>
 

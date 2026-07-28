@@ -19,14 +19,14 @@ export const ToastContainer = memo(function ToastContainer() {
             transition={{ duration: 0.2 }}
             className={cn(
               'pointer-events-auto flex items-center gap-3 p-3.5 rounded-xl shadow-lg border text-sm font-medium backdrop-blur-md',
-              toast.type === 'success' && 'bg-emerald-950/90 text-emerald-100 border-emerald-800/50 dark:bg-emerald-950/90 dark:text-emerald-100',
-              toast.type === 'error' && 'bg-rose-950/90 text-rose-100 border-rose-800/50 dark:bg-rose-950/90 dark:text-rose-100',
-              toast.type === 'info' && 'bg-surface-900/90 text-text-primary border-surface-700/50 dark:bg-surface-800/95 dark:text-white'
+              toast.type === 'success' && 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-100 dark:border-emerald-800/50',
+              toast.type === 'error' && 'bg-rose-100 text-rose-900 border-rose-300 dark:bg-rose-950 dark:text-rose-100 dark:border-rose-800/50',
+              toast.type === 'info' && 'bg-surface-0 text-text-primary border-surface-border shadow-xl'
             )}
           >
-            {toast.type === 'success' && <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />}
-            {toast.type === 'error' && <AlertCircle size={18} className="text-rose-400 shrink-0" />}
-            {toast.type === 'info' && <Info size={18} className="text-primary-400 shrink-0" />}
+            {toast.type === 'success' && <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />}
+            {toast.type === 'error' && <AlertCircle size={18} className="text-rose-600 dark:text-rose-400 shrink-0" />}
+            {toast.type === 'info' && <Info size={18} className="text-primary-600 dark:text-primary-400 shrink-0" />}
 
             <span className="flex-1 text-xs md:text-sm">{toast.message}</span>
 
