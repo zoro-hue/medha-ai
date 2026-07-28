@@ -24,7 +24,8 @@ function getSystemTheme(): 'light' | 'dark' {
 }
 
 function resolveTheme(theme: Theme): 'light' | 'dark' {
-  return theme === 'system' ? getSystemTheme() : theme;
+  if (theme === 'system') return 'light'; // Always default to light mode on initial load
+  return theme;
 }
 
 function applyTheme(resolved: 'light' | 'dark'): void {

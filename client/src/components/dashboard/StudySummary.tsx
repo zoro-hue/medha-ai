@@ -221,7 +221,7 @@ function MindMapTree({ nodes }: { nodes: MindMapNode[] }) {
             className={cn(
               'text-sm px-2.5 py-1 rounded-lg transition-colors cursor-pointer',
               depth === 0
-                ? 'font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/40 border border-primary-500/20'
+                ? 'font-bold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700'
                 : 'text-text-secondary hover:bg-surface-100'
             )}
           >

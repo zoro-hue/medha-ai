@@ -82,7 +82,7 @@ export const GenerationOverlay = memo(function GenerationOverlay({ isGenerating,
                   key={step.id}
                   className={cn(
                     'flex items-start gap-3 p-3 rounded-2xl border transition-all duration-200',
-                    isCurrent && 'bg-primary-50/60 dark:bg-primary-950/30 border-primary-500/30 shadow-sm',
+                    isCurrent && 'bg-primary-100 dark:bg-primary-950 border-primary-300 dark:border-primary-700 shadow-sm',
                     isCompleted && 'bg-surface-50 border-surface-border opacity-80',
                     step.id > currentStep && 'border-transparent opacity-40'
                   )}

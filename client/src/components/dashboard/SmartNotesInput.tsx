@@ -168,7 +168,7 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
           {inputContent && (
             <button
               onClick={handleClearText}
-              className="px-3 py-1 rounded-full text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors ml-auto flex items-center gap-1"
+              className="px-3 py-1 rounded-full text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950 transition-colors ml-auto flex items-center gap-1"
             >
               <X size={12} /> Clear Text
             </button>
@@ -182,7 +182,7 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
         className={cn(
           'relative rounded-2xl border-2 transition-all duration-300',
           isDragOver
-            ? 'border-primary-400 bg-primary-50/50 dark:bg-primary-900/20 shadow-glow'
+            ? 'border-primary-500 bg-primary-100/80 dark:bg-primary-900/80 shadow-glow'
             : 'border-surface-border bg-surface-0 hover:border-surface-300',
           isGenerating && 'opacity-60 pointer-events-none'
         )}
@@ -200,9 +200,9 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-primary-50/80 dark:bg-primary-900/40 backdrop-blur-sm"
+              className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-primary-100/90 dark:bg-primary-950 backdrop-blur-sm"
             >
-              <div className="flex flex-col items-center gap-2 text-primary-600 dark:text-primary-400">
+              <div className="flex flex-col items-center gap-2 text-primary-700 dark:text-primary-300">
                 <Upload size={32} />
                 <span className="text-sm font-medium">Drop your file here</span>
               </div>
@@ -368,7 +368,7 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="mt-4 flex items-start gap-3 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50"
+            className="mt-4 flex items-start gap-3 p-4 rounded-xl bg-rose-100 dark:bg-rose-950 border border-rose-300 dark:border-rose-800"
             role="alert"
           >
             <AlertCircle size={18} className="text-rose-500 mt-0.5 flex-shrink-0" />
