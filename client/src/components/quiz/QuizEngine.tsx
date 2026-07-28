@@ -320,7 +320,7 @@ function QuizQuestion({
                   <p className="text-xs font-bold uppercase tracking-wider text-primary-700 dark:text-primary-400 mb-1">
                     Explanation
                   </p>
-                  <p className="text-sm text-primary-950 dark:text-primary-100 leading-relaxed font-medium">{question.explanation}</p>
+                  <p className="text-sm text-text-primary leading-relaxed font-medium">{question.explanation}</p>
                 </div>
               </div>
             </div>
