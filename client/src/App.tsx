@@ -70,20 +70,25 @@ const VIEW_ORDER: ViewMode[] = [
 
 const verticalSpatialVariants = {
   initial: (isGoingDown: boolean) => ({
+    // Circular arc entrance: rotates along X and Z axes for orbital feel
     y: isGoingDown ? 180 : -180,
     rotateX: isGoingDown ? -22 : 22,
+    rotateZ: isGoingDown ? -4 : 4,
     scale: 0.90,
     opacity: 0,
   }),
   animate: {
     y: 0,
     rotateX: 0,
+    rotateZ: 0,
     scale: 1,
     opacity: 1,
   },
   exit: (isGoingDown: boolean) => ({
+    // Reverse circular arc exit
     y: isGoingDown ? -180 : 180,
     rotateX: isGoingDown ? 22 : -22,
+    rotateZ: isGoingDown ? 4 : -4,
     scale: 0.90,
     opacity: 0,
   }),

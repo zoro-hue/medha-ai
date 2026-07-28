@@ -27,10 +27,12 @@ import { staggerContainer, staggerItem } from '@/animations/variants';
 
 const cardVariants = {
   initial: (dir: number) => ({
+    // Circular arc motion: rotates along Y, X, and Z axes for orbital deck motion
     x: dir > 0 ? 220 : -220,
-    y: 15,
+    y: dir > 0 ? 15 : -15,
     rotateY: dir > 0 ? 42 : -42,
     rotateX: -8,
+    rotateZ: dir > 0 ? 6 : -6,
     scale: 0.82,
     opacity: 0,
   }),
@@ -39,14 +41,17 @@ const cardVariants = {
     y: 0,
     rotateY: 0,
     rotateX: 0,
+    rotateZ: 0,
     scale: 1,
     opacity: 1,
   },
   exit: (dir: number) => ({
+    // Reverse circular arc exit
     x: dir > 0 ? -220 : 220,
-    y: -15,
+    y: dir > 0 ? -15 : 15,
     rotateY: dir > 0 ? -42 : 42,
     rotateX: 8,
+    rotateZ: dir > 0 ? -6 : 6,
     scale: 0.82,
     opacity: 0,
   }),
