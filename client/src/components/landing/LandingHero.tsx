@@ -19,39 +19,13 @@ interface LandingHeroProps {
 export const LandingHero = memo(function LandingHero({ onLaunch }: LandingHeroProps) {
   return (
     <div className="relative min-h-screen w-full bg-surface-0 text-text-primary selection:bg-primary-500 selection:text-white overflow-x-hidden">
-      {/* ================= Z-LAYER 0: SLOW BREATHING AMBIENT AI ENVIRONMENT (20-40s) ================= */}
+      {/* ================= Z-LAYER 0: AMBIENT AI ENVIRONMENT ================= */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Soft Breathing Radial Gradient Orb 1 */}
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.15, 0.28, 0.15],
-            x: ['-50%', '-48%', '-50%'],
-            y: ['0%', '3%', '0%'],
-          }}
-          transition={{
-            duration: 32,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-0 left-1/2 w-[1200px] h-[600px] bg-gradient-to-b from-primary-500/20 via-indigo-500/15 to-transparent blur-[120px] rounded-full"
-        />
+        {/* Soft Radial Gradient Orb 1 */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-primary-500/15 via-indigo-500/10 to-transparent blur-[100px] rounded-full pointer-events-none" />
 
-        {/* Soft Breathing Radial Gradient Orb 2 */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.22, 0.1],
-            x: ['-50%', '-52%', '-50%'],
-            y: ['0%', '-4%', '0%'],
-          }}
-          transition={{
-            duration: 38,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute bottom-0 left-1/2 w-[1000px] h-[450px] bg-gradient-to-t from-purple-500/15 via-emerald-500/10 to-transparent blur-[140px] rounded-full"
-        />
+        {/* Soft Radial Gradient Orb 2 */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-gradient-to-t from-purple-500/10 via-emerald-500/5 to-transparent blur-[120px] rounded-full pointer-events-none" />
 
         {/* Micro Floating Energy Nodes (Subtle AI Presence) */}
         <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:48px_48px] opacity-[0.03] dark:opacity-[0.06]" />

@@ -409,24 +409,13 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Side 3D Deck Interactive Preview - Right Card (Breathy Swaying Motion) */}
+          {/* Side 3D Deck Interactive Preview - Right Card */}
           <motion.div
             onClick={handleNextCard}
             title="Click to go to next card"
-            animate={{
-              y: [6, -6, 6],
-              rotateY: [-22, -14, -22],
-              scale: [0.86, 0.89, 0.86],
-            }}
-            transition={{
-              duration: 9.5,
-              delay: 0.5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            whileHover={{ scale: 0.92, opacity: 0.9 }}
-            style={{ transformStyle: 'preserve-3d' }}
-            className="hidden md:flex absolute right-0 lg:right-4 w-44 lg:w-48 h-[270px] md:h-[300px] rounded-2xl bg-surface-0/95 border border-surface-border shadow-[0_20px_40px_rgba(0,0,0,0.12)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.18)] cursor-pointer z-10 flex-col justify-between p-5 backdrop-blur-md transition-all duration-500"
+            whileHover={{ scale: 0.92, opacity: 0.95 }}
+            style={{ transform: 'rotateY(-18deg) scale(0.88)', transformStyle: 'preserve-3d' }}
+            className="hidden md:flex absolute right-0 lg:right-4 w-44 lg:w-48 h-[270px] md:h-[300px] rounded-2xl bg-surface-0 border border-surface-border shadow-xl hover:shadow-2xl cursor-pointer z-10 flex-col justify-between p-5 backdrop-blur-md transition-all duration-300"
           >
             <div>
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-tertiary">
@@ -442,40 +431,21 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
           </motion.div>
 
           {/* Far Right Faded Card (Edge Depth) */}
-          <motion.div
+          <div
             aria-hidden="true"
-            animate={{
-              y: [5, -3, 5],
-              rotateY: [-32, -24, -32],
-            }}
-            transition={{
-              duration: 11,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="hidden xl:block absolute -right-36 w-36 h-[250px] rounded-2xl bg-surface-100/30 border border-surface-border/40 shadow-sm pointer-events-none opacity-20 transform scale-75"
+            style={{ transform: 'rotateY(-28deg) scale(0.75)' }}
+            className="hidden xl:block absolute -right-36 w-36 h-[250px] rounded-2xl bg-surface-100/30 border border-surface-border/40 shadow-sm pointer-events-none opacity-20"
           >
             <div className="p-4 opacity-40">
               <div className="w-12 h-2.5 bg-surface-300 rounded mb-3" />
               <div className="w-full h-2 bg-surface-300 rounded mb-1.5" />
               <div className="w-4/5 h-2 bg-surface-300 rounded" />
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Breathy Dynamic Ground Reflection Shadow */}
-        <motion.div
-          animate={{
-            scaleX: [0.85, 0.98, 0.85],
-            opacity: [0.18, 0.32, 0.18],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="w-full max-w-md mx-auto h-5 rounded-full bg-primary-500/20 dark:bg-primary-500/35 blur-2xl -mt-2 pointer-events-none"
-        />
+        {/* Dynamic Ground Reflection Shadow */}
+        <div className="w-full max-w-md mx-auto h-5 rounded-full bg-primary-500/15 blur-xl -mt-2 pointer-events-none" />
 
         {/* Interaction hints */}
         <p className="text-center text-xs text-text-tertiary mt-4 md:hidden">
