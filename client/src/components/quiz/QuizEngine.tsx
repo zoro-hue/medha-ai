@@ -257,19 +257,19 @@ function QuizQuestion({
               className={cn(
                 'w-full flex items-start gap-3.5 p-4 rounded-2xl text-left text-sm font-medium border-2 transition-all duration-200 min-h-[56px] overflow-visible',
                 !showResult && [
-                  'border-surface-border bg-surface-0',
-                  'hover:border-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-900/30',
-                  isSelected && 'border-primary-500 bg-primary-100/90 dark:bg-primary-900/80',
+                  'border-surface-border bg-surface-0 text-text-primary',
+                  'hover:border-primary-400 hover:bg-primary-100/60 dark:hover:bg-primary-900/60',
+                  isSelected && 'border-primary-500 bg-primary-100 dark:bg-primary-900',
                 ],
                 showResult && isCorrect && [
-                  'border-emerald-500 bg-emerald-100/90 dark:bg-emerald-950 text-emerald-950 dark:text-emerald-100',
+                  'border-emerald-500 bg-emerald-100 dark:bg-emerald-900 text-emerald-950 dark:text-emerald-100',
                   'shadow-sm',
                 ],
                 showResult && isSelected && !isCorrect && [
-                  'border-rose-500 bg-rose-100/90 dark:bg-rose-950 text-rose-950 dark:text-rose-100',
+                  'border-rose-500 bg-rose-100 dark:bg-rose-900 text-rose-950 dark:text-rose-100',
                   'shadow-sm',
                 ],
-                showResult && !isSelected && !isCorrect && 'border-surface-border opacity-50 bg-surface-50'
+                showResult && !isSelected && !isCorrect && 'border-surface-border opacity-50 bg-surface-0 text-text-secondary'
               )}
               whileHover={!isAnswered ? { scale: 1.005 } : undefined}
               whileTap={!isAnswered ? { scale: 0.995 } : undefined}
@@ -313,7 +313,7 @@ function QuizQuestion({
             transition={{ duration: 0.3 }}
             className="mb-6"
           >
-            <div className="p-5 rounded-2xl bg-primary-100/90 dark:bg-primary-950 border border-primary-300 dark:border-primary-700">
+            <div className="p-5 rounded-2xl bg-primary-100 dark:bg-primary-900 border border-primary-300 dark:border-primary-700">
               <div className="flex items-start gap-3">
                 <BookOpen size={18} className="text-primary-500 mt-0.5 flex-shrink-0" />
                 <div>
