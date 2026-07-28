@@ -19,9 +19,9 @@ export const springs = {
 // ─── Page Transitions ─────────────────────────────────────────────────────────
 
 export const pageVariants: Variants = {
-  initial: { opacity: 0, y: 20, filter: 'blur(4px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
-  exit: { opacity: 0, y: -10, filter: 'blur(4px)' },
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
 };
 
 export const pageTransition: Transition = {

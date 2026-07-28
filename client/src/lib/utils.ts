@@ -79,11 +79,11 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function getDifficultyColor(difficulty: 'easy' | 'medium' | 'hard'): string {
   switch (difficulty) {
     case 'easy':
-      return 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-800/30';
+      return 'text-emerald-700 dark:text-emerald-300 bg-emerald-100/90 dark:bg-emerald-950 border border-emerald-300/80 dark:border-emerald-700/60 font-semibold';
     case 'medium':
-      return 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800/30';
+      return 'text-amber-800 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950 border border-amber-300/80 dark:border-amber-700/60 font-semibold';
     case 'hard':
-      return 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-800/30';
+      return 'text-rose-800 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-950 border border-rose-300/80 dark:border-rose-700/60 font-semibold';
   }
 }
 
