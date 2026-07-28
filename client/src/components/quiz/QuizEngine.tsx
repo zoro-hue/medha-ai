@@ -241,7 +241,7 @@ function QuizQuestion({
       </motion.div>
 
       {/* Options */}
-      <motion.div variants={staggerContainer} className="space-y-3 mb-8">
+      <motion.div variants={staggerContainer} className="space-y-3.5 mb-8">
         {question.options.map((option, index) => {
           const letter = String.fromCharCode(65 + index);
           const isSelected = selectedOption === option;
@@ -255,46 +255,49 @@ function QuizQuestion({
               onClick={() => handleSelect(option)}
               disabled={isAnswered}
               className={cn(
-                'w-full flex items-start gap-4 p-4 rounded-xl text-left text-sm font-medium border-2 transition-all duration-300 min-h-[56px]',
+                'w-full flex items-start gap-3.5 p-4 rounded-2xl text-left text-sm font-medium border-2 transition-all duration-200 min-h-[56px] overflow-visible',
                 !showResult && [
                   'border-surface-border bg-surface-0',
-                  'hover:border-primary-400 hover:bg-primary-50/30 dark:hover:bg-primary-950/20',
-                  isSelected && 'border-primary-500 bg-primary-50 dark:bg-primary-950/40',
+                  'hover:border-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-950/20',
+                  isSelected && 'border-primary-500 bg-primary-50/80 dark:bg-primary-950/40',
                 ],
                 showResult && isCorrect && [
-                  'border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/30 text-emerald-950 dark:text-emerald-100',
-                  'shadow-[0_0_20px_rgba(16,185,129,0.25)]',
+                  'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100',
+                  'shadow-sm',
                 ],
                 showResult && isSelected && !isCorrect && [
-                  'border-rose-500 bg-rose-50/60 dark:bg-rose-950/30 text-rose-950 dark:text-rose-100',
-                  'shadow-[0_0_15px_rgba(244,63,94,0.2)]',
+                  'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-950 dark:text-rose-100',
+                  'shadow-sm',
                 ],
-                showResult && !isSelected && !isCorrect && 'border-surface-border opacity-40'
+                showResult && !isSelected && !isCorrect && 'border-surface-border opacity-50 bg-surface-50'
               )}
-              whileHover={!isAnswered ? { scale: 1.01 } : undefined}
-              whileTap={!isAnswered ? { scale: 0.99 } : undefined}
+              whileHover={!isAnswered ? { scale: 1.005 } : undefined}
+              whileTap={!isAnswered ? { scale: 0.995 } : undefined}
             >
-              {/* Badge */}
+              {/* Option Letter Badge */}
               <span
                 className={cn(
-                  'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 transition-transform duration-200',
-                  !showResult && 'bg-surface-100 text-text-secondary',
-                  showResult && isCorrect && 'bg-emerald-500 text-white scale-110',
-                  showResult && isSelected && !isCorrect && 'bg-rose-500 text-white',
+                  'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 transition-transform duration-200',
+                  !showResult && 'bg-surface-100 text-text-secondary border border-surface-border',
+                  showResult && isCorrect && 'bg-emerald-500 text-white shadow-sm',
+                  showResult && isSelected && !isCorrect && 'bg-rose-500 text-white shadow-sm',
                 )}
               >
                 {showResult && isCorrect ? (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1.2 }} transition={{ duration: 0.2 }}>
-                    <Check size={16} />
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.2 }}>
+                    <Check size={15} />
                   </motion.div>
                 ) : showResult && isSelected && !isCorrect ? (
-                  <XCircle size={16} />
+                  <XCircle size={15} />
                 ) : (
                   letter
                 )}
               </span>
 
-              <span className="flex-1 font-medium whitespace-normal break-words leading-relaxed text-text-primary">{option}</span>
+              {/* Full Option Text — No Truncation */}
+              <span className="flex-1 font-medium whitespace-normal break-words leading-relaxed text-text-primary text-sm pt-0.5">
+                {option}
+              </span>
             </motion.button>
           );
         })}

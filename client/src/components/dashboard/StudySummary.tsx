@@ -91,7 +91,7 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-primary-50 dark:bg-primary-950/60 border border-primary-500/20 flex items-center justify-center">
               <Lightbulb size={16} className="text-primary-600 dark:text-primary-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Key Principles</h3>
@@ -112,7 +112,7 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-500/20 flex items-center justify-center">
               <AlertTriangle size={16} className="text-rose-600 dark:text-rose-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Common Misconceptions</h3>
@@ -133,7 +133,7 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/20 flex items-center justify-center">
               <BookOpen size={16} className="text-emerald-600 dark:text-emerald-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Revision Tips</h3>
@@ -154,7 +154,7 @@ export const StudySummary = memo(function StudySummary() {
           className="p-6 rounded-2xl bg-surface-50 border border-surface-border space-y-4"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-500/20 flex items-center justify-center">
               <GitBranch size={16} className="text-amber-600 dark:text-amber-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">Interactive Topic Map</h3>

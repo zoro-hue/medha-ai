@@ -153,12 +153,12 @@ export function generateLocalStudyMaterial(
   let qId = 1;
 
   flashcards.slice(0, targetQuizzes).forEach((card, idx) => {
-    const correctAnswer = card.answer.length > 80 ? `${card.answer.slice(0, 75)}...` : card.answer;
+    const correctAnswer = card.answer;
     
     // Generate distractors
     const otherAnswers = flashcards
       .filter((_, i) => i !== idx)
-      .map((c) => (c.answer.length > 80 ? `${c.answer.slice(0, 75)}...` : c.answer));
+      .map((c) => c.answer);
 
     const optionSet = new Set<string>();
     optionSet.add(correctAnswer);
