@@ -23,17 +23,32 @@ export class GeminiProvider implements AIProvider {
       throw new DOMException('Request was aborted', 'AbortError');
     }
 
-    const response = await this.client.models.generateContent({
-      model: 'gemini-2.5-flash-preview-05-20',
-      contents: prompt,
-      config: {
-        systemInstruction: systemPrompt,
-        temperature: 0.3,       // Low temperature for consistent JSON
-        topP: 0.8,
-        maxOutputTokens: 8192,
-        responseMimeType: 'application/json', // Force JSON output mode
-      },
-    });
+    let response;
+    try {
+      response = await this.client.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: {
+          systemInstruction: systemPrompt,
+          temperature: 0.3,
+          topP: 0.8,
+          maxOutputTokens: 8192,
+          responseMimeType: 'application/json',
+        },
+      });
+    } catch {
+      response = await this.client.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: prompt,
+        config: {
+          systemInstruction: systemPrompt,
+          temperature: 0.3,
+          topP: 0.8,
+          maxOutputTokens: 8192,
+          responseMimeType: 'application/json',
+        },
+      });
+    }
 
     // Handle abort during generation
     if (signal?.aborted) {

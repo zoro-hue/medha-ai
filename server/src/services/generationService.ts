@@ -119,6 +119,7 @@ export class GenerationService {
         };
       } catch (error) {
         lastError = error as Error;
+        console.error(`[Primary ${this.primaryProvider.name} Attempt ${attempt + 1}] Error:`, (error as Error).message);
         totalRetries++;
 
         // Don't retry on abort
@@ -154,6 +155,7 @@ export class GenerationService {
         };
       } catch (error) {
         lastError = error as Error;
+        console.error(`[Fallback ${this.fallbackProvider.name} Attempt ${attempt + 1}] Error:`, (error as Error).message);
         totalRetries++;
 
         if ((error as Error).name === 'AbortError') {
