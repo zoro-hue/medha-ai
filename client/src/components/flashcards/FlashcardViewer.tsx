@@ -28,10 +28,10 @@ import { staggerContainer, staggerItem } from '@/animations/variants';
 const cardVariants = {
   initial: (dir: number) => ({
     x: dir > 0 ? 220 : -220,
-    y: 16,
-    rotateY: dir > 0 ? 36 : -36,
-    rotateX: -6,
-    scale: 0.85,
+    y: 15,
+    rotateY: dir > 0 ? 42 : -42,
+    rotateX: -8,
+    scale: 0.82,
     opacity: 0,
   }),
   animate: {
@@ -44,10 +44,10 @@ const cardVariants = {
   },
   exit: (dir: number) => ({
     x: dir > 0 ? -220 : 220,
-    y: -16,
-    rotateY: dir > 0 ? -36 : 36,
-    rotateX: 6,
-    scale: 0.85,
+    y: -15,
+    rotateY: dir > 0 ? -42 : 42,
+    rotateX: 8,
+    scale: 0.82,
     opacity: 0,
   }),
 };
@@ -291,7 +291,7 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               animate="animate"
               exit="exit"
               transition={{
-                duration: 0.55,
+                duration: 1.3,
                 ease: [0.16, 1, 0.3, 1],
               }}
               drag="x"
@@ -309,7 +309,7 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               {/* 3D Flip Container */}
               <motion.div
                 animate={{ rotateY: flashcard.isFlipped ? 180 : 0 }}
-                transition={{ duration: 0.65, ease: [0.25, 1, 0.5, 1] }}
+                transition={{ duration: 0.85, ease: [0.25, 1, 0.5, 1] }}
                 style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
                 className="relative w-full min-h-[280px] md:min-h-[320px]"
               >

@@ -68,11 +68,13 @@ const VIEW_ORDER: ViewMode[] = [
   'history',
 ];
 
-const spatialViewVariants = {
+const verticalSpatialVariants = {
   initial: (isGoingDown: boolean) => ({
-    y: isGoingDown ? 140 : -140,
-    rotateX: isGoingDown ? -18 : 18,
-    scale: 0.93,
+    // When selecting a section BELOW: enters from bottom (+320px) rotating into focus
+    // When selecting a section ABOVE: enters from top (-320px) rotating into focus
+    y: isGoingDown ? 320 : -320,
+    rotateX: isGoingDown ? -36 : 36,
+    scale: 0.84,
     opacity: 0,
   }),
   animate: {
@@ -82,9 +84,11 @@ const spatialViewVariants = {
     opacity: 1,
   },
   exit: (isGoingDown: boolean) => ({
-    y: isGoingDown ? -140 : 140,
-    rotateX: isGoingDown ? 18 : -18,
-    scale: 0.93,
+    // When selecting a section BELOW: exits toward top (-320px)
+    // When selecting a section ABOVE: exits toward bottom (+320px)
+    y: isGoingDown ? -320 : 320,
+    rotateX: isGoingDown ? 36 : -36,
+    scale: 0.84,
     opacity: 0,
   }),
 };
@@ -173,18 +177,18 @@ function AppContent() {
           <Sidebar onOpenSearch={() => setIsSearchOpen(true)} />
 
           {/* Main Content View Container - Isolated Scroll Area */}
-          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8" style={{ perspective: 1200 }}>
+          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8" style={{ perspective: 1400 }}>
             <div className="py-8 md:py-12 min-h-full">
               <AnimatePresence mode="wait" custom={isGoingDown}>
                 <motion.div
                   key={viewMode}
                   custom={isGoingDown}
-                  variants={spatialViewVariants}
+                  variants={verticalSpatialVariants}
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   transition={{
-                    duration: 0.55,
+                    duration: 1.2,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   style={{ transformStyle: 'preserve-3d', willChange: 'transform, opacity' }}
