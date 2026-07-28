@@ -70,11 +70,9 @@ const VIEW_ORDER: ViewMode[] = [
 
 const verticalSpatialVariants = {
   initial: (isGoingDown: boolean) => ({
-    // When selecting a section BELOW: enters from bottom (+320px) rotating into focus
-    // When selecting a section ABOVE: enters from top (-320px) rotating into focus
-    y: isGoingDown ? 320 : -320,
-    rotateX: isGoingDown ? -36 : 36,
-    scale: 0.84,
+    y: isGoingDown ? 180 : -180,
+    rotateX: isGoingDown ? -22 : 22,
+    scale: 0.90,
     opacity: 0,
   }),
   animate: {
@@ -84,11 +82,9 @@ const verticalSpatialVariants = {
     opacity: 1,
   },
   exit: (isGoingDown: boolean) => ({
-    // When selecting a section BELOW: exits toward top (-320px)
-    // When selecting a section ABOVE: exits toward bottom (+320px)
-    y: isGoingDown ? -320 : 320,
-    rotateX: isGoingDown ? 36 : -36,
-    scale: 0.84,
+    y: isGoingDown ? -180 : 180,
+    rotateX: isGoingDown ? 22 : -22,
+    scale: 0.90,
     opacity: 0,
   }),
 };
@@ -188,7 +184,7 @@ function AppContent() {
                   animate="animate"
                   exit="exit"
                   transition={{
-                    duration: 1.2,
+                    duration: 0.45,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   style={{ transformStyle: 'preserve-3d', willChange: 'transform, opacity' }}
