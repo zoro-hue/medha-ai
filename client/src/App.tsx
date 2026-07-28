@@ -1,18 +1,20 @@
-/**
- * App Root Component
- *
- * Assembles the layout with sidebar navigation and content views.
- * Uses TanStack Query provider for data fetching.
- */
-
-import { lazy, Suspense } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Sidebar } from '@/components/common/Sidebar';
+import { HomeDashboard } from '@/components/dashboard/HomeDashboard';
 import { SmartNotesInput } from '@/components/dashboard/SmartNotesInput';
+import { GenerationOverlay } from '@/components/dashboard/GenerationOverlay';
+import { ToastContainer } from '@/components/common/ToastContainer';
+import { CommandPalette } from '@/components/common/CommandPalette';
 import { useStudyStore } from '@/store/useStudyStore';
+import { useGenerate } from '@/hooks/useGenerate';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { pageVariants, pageTransition } from '@/animations/variants';
+import type { ViewMode } from '@/types';
+
+import { BotAssistant } from '@/components/common/BotAssistant';
+import { AICompanionLayer } from '@/components/common/AICompanionLayer';
+import { LandingHero } from '@/components/landing/LandingHero';
 
 // Lazy-loaded views for code splitting
 const FlashcardViewer = lazy(() =>
@@ -42,7 +44,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback for lazy-loaded components
 function ViewSkeleton() {
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-0 py-8">
@@ -55,12 +56,71 @@ function ViewSkeleton() {
   );
 }
 
+const VIEW_ORDER: ViewMode[] = [
+  'home',
+  'input',
+  'flashcards',
+  'quiz',
+  'summary',
+  'analytics',
+  'history',
+];
+
+const verticalSpatialVariants = {
+  initial: (isGoingDown: boolean) => ({
+    // When selecting a section BELOW (isGoingDown=true): enters from bottom (+320px) moving up into focus
+    // When selecting a section ABOVE (isGoingDown=false): enters from top (-320px) moving down into focus
+    y: isGoingDown ? 320 : -320,
+    rotateX: isGoingDown ? -36 : 36,
+    scale: 0.84,
+    opacity: 0,
+    filter: 'blur(5px)',
+  }),
+  animate: {
+    y: 0,
+    rotateX: 0,
+    scale: 1,
+    opacity: 1,
+    filter: 'blur(0px)',
+  },
+  exit: (isGoingDown: boolean) => ({
+    // When selecting a section BELOW (isGoingDown=true): exits toward top (-320px)
+    // When selecting a section ABOVE (isGoingDown=false): exits toward bottom (+320px)
+    y: isGoingDown ? -320 : 320,
+    rotateX: isGoingDown ? 36 : -36,
+    scale: 0.84,
+    opacity: 0,
+    filter: 'blur(5px)',
+  }),
+};
+
 function AppContent() {
-  const { viewMode } = useStudyStore();
+  const { viewMode, isGenerating } = useStudyStore();
+  const { cancel } = useGenerate();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [hasLaunched, setHasLaunched] = useState(false);
+  
+  // Track accurate previous viewMode across re-renders
+  const prevViewModeRef = useRef<ViewMode>(viewMode);
+  const prevViewMode = prevViewModeRef.current;
+
   useKeyboardShortcuts();
+
+  // Compute direction:
+  // isGoingDown = true: Selecting a section BELOW present section -> Top-to-Bottom motion
+  // isGoingDown = false: Selecting a section ABOVE present section -> Bottom-to-Top motion
+  const prevIndex = VIEW_ORDER.indexOf(prevViewMode);
+  const currIndex = VIEW_ORDER.indexOf(viewMode);
+  const isGoingDown = currIndex >= prevIndex;
+
+  useEffect(() => {
+    prevViewModeRef.current = viewMode;
+  }, [viewMode]);
 
   const renderView = () => {
     switch (viewMode) {
+      case 'home':
+        return <HomeDashboard />;
       case 'input':
         return <SmartNotesInput />;
       case 'flashcards':
@@ -94,32 +154,65 @@ function AppContent() {
           </Suspense>
         );
       default:
-        return <SmartNotesInput />;
+        return <HomeDashboard />;
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-surface-0">
-      <Sidebar />
+    <AnimatePresence mode="wait">
+      {!hasLaunched ? (
+        <motion.div
+          key="landing-hero"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="w-full min-h-screen"
+        >
+          <LandingHero onLaunch={() => setHasLaunched(true)} />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="workspace-app"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="flex h-screen w-screen overflow-hidden bg-surface-0 relative"
+        >
+          {/* 100% Static Fixed Left Sidebar */}
+          <Sidebar onOpenSearch={() => setIsSearchOpen(true)} />
 
-      {/* Main Content */}
-      <main className="flex-1 pb-24 md:pb-8 overflow-y-auto">
-        <div className="py-8 md:py-12">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={viewMode}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              {renderView()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </main>
-    </div>
+          {/* Main Content View Container - Isolated Scroll Area */}
+          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8" style={{ perspective: 1400 }}>
+            <div className="py-8 md:py-12 min-h-full">
+              <AnimatePresence mode="popLayout" custom={isGoingDown}>
+                <motion.div
+                  key={viewMode}
+                  custom={isGoingDown}
+                  variants={verticalSpatialVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{
+                    duration: 1.3,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  {renderView()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </main>
+
+          {/* Overlays & Notifications */}
+          <AICompanionLayer />
+          <GenerationOverlay isGenerating={isGenerating} onCancel={cancel} />
+          <CommandPalette isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+          <ToastContainer />
+          <BotAssistant />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

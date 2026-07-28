@@ -1,16 +1,8 @@
-/**
- * Quiz Engine
- *
- * Interactive quiz component with multiple-choice questions,
- * instant feedback, explanations, timer, progress tracking,
- * retry wrong answers, and final results.
- */
-
 import { useState, useEffect, useCallback, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import {
   Clock,
-  CheckCircle2,
   XCircle,
   ArrowRight,
   RotateCcw,
@@ -18,11 +10,13 @@ import {
   Target,
   Zap,
   BookOpen,
+  Sparkles,
+  Check,
 } from 'lucide-react';
 import { cn, getDifficultyColor, formatDuration } from '@/lib/utils';
 import { useStudyStore } from '@/store/useStudyStore';
 import { staggerContainer, staggerItem } from '@/animations/variants';
-import type { QuizQuestion } from '@/types';
+import type { QuizQuestion as QuizQuestionType } from '@/types';
 
 export const QuizEngine = memo(function QuizEngine() {
   const {
@@ -31,16 +25,17 @@ export const QuizEngine = memo(function QuizEngine() {
     startQuiz,
     answerQuestion,
     nextQuestion,
-    retryWrongAnswers,
-    resetQuiz,
     setShowExplanation,
-    getQuizScore,
-    getWrongAnswers,
-    setViewMode,
   } = useStudyStore();
 
-  // If quiz hasn't started yet, show the start screen
-  if (!material) return null;
+  if (!material) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-text-tertiary">
+        <p className="text-lg font-semibold text-text-primary mt-2">No Quiz Available</p>
+        <p className="text-sm mt-1">Paste study notes to generate custom quizzes!</p>
+      </div>
+    );
+  }
 
   if (quiz.mode === 'results') {
     return <QuizResults />;
@@ -50,8 +45,8 @@ export const QuizEngine = memo(function QuizEngine() {
     return <QuizStart onStart={startQuiz} questionCount={material.quiz.length} />;
   }
 
-  const questions = quiz.mode === 'retrying'
-    ? material.quiz.filter((q) => getWrongAnswers().some((a) => a.questionId === q.id))
+  const questions = quiz.mode === 'retrying' && quiz.retryQuestionIds && quiz.retryQuestionIds.length > 0
+    ? material.quiz.filter((q) => quiz.retryQuestionIds?.includes(q.id))
     : material.quiz;
 
   const currentQuestion = questions[quiz.currentIndex];
@@ -66,7 +61,7 @@ export const QuizEngine = memo(function QuizEngine() {
       onNext={nextQuestion}
       showExplanation={quiz.showExplanation}
       setShowExplanation={setShowExplanation}
-      startedAt={quiz.startedAt}
+      startedAt={quiz.startedAt || Date.now()}
       answers={quiz.answers}
     />
   );
@@ -82,17 +77,13 @@ function QuizStart({ onStart, questionCount }: { onStart: () => void; questionCo
       animate="animate"
       className="max-w-lg mx-auto px-4 md:px-0 py-12"
     >
-      <motion.div
-        variants={staggerItem}
-        className="text-center"
-      >
-        <div className="w-16 h-16 rounded-2xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center mx-auto mb-6">
+      <motion.div variants={staggerItem} className="text-center">
+        <div className="w-16 h-16 rounded-2xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center mx-auto mb-6 shadow-sm">
           <Target size={32} className="text-primary-500" />
         </div>
-        <h2 className="text-2xl font-bold text-text-primary mb-3">Ready to Test Your Knowledge?</h2>
-        <p className="text-text-secondary mb-8">
-          {questionCount} multiple-choice questions based on your study material.
-          Answer carefully — you can retry wrong answers later.
+        <h2 className="text-2xl font-bold text-text-primary mb-3">Interactive Knowledge Assessment</h2>
+        <p className="text-text-secondary text-sm mb-8 leading-relaxed">
+          {questionCount} multiple-choice items tailored to your material. Instant feedback with detailed explanations.
         </p>
 
         <motion.button
@@ -118,7 +109,7 @@ function QuizStart({ onStart, questionCount }: { onStart: () => void; questionCo
 // ─── Individual Question ────────────────────────────────────────────────────────
 
 interface QuizQuestionProps {
-  question: QuizQuestion;
+  question: QuizQuestionType;
   questionIndex: number;
   totalQuestions: number;
   onAnswer: (answer: { questionId: string; selectedAnswer: string; isCorrect: boolean; timeSpentMs: number }) => void;
@@ -143,6 +134,7 @@ function QuizQuestion({
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [questionStartTime] = useState(Date.now());
   const [elapsed, setElapsed] = useState(0);
+  const [isShaking, setIsShaking] = useState(false);
   const isAnswered = answers.some((a) => a.questionId === question.id);
 
   // Timer
@@ -154,19 +146,38 @@ function QuizQuestion({
     return () => clearInterval(interval);
   }, [startedAt, isAnswered]);
 
-  // Reset selected option on new question
+  // Reset state on new question
   useEffect(() => {
     setSelectedOption(null);
+    setIsShaking(false);
   }, [question.id]);
 
   const handleSelect = useCallback(
     (option: string) => {
       if (isAnswered) return;
       setSelectedOption(option);
+      const isCorrect = option === question.correctAnswer;
+
+      if (isCorrect) {
+        // Trigger tiny confetti burst
+        confetti({
+          particleCount: 30,
+          spread: 60,
+          origin: { y: 0.7 },
+          colors: ['#10b981', '#6366f1', '#f59e0b'],
+        });
+      } else {
+        // Trigger container shake & subtle vibration
+        setIsShaking(true);
+        if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+          navigator.vibrate?.(100);
+        }
+      }
+
       onAnswer({
         questionId: question.id,
         selectedAnswer: option,
-        isCorrect: option === question.correctAnswer,
+        isCorrect,
         timeSpentMs: Date.now() - questionStartTime,
       });
     },
@@ -180,36 +191,41 @@ function QuizQuestion({
       variants={staggerContainer}
       initial="initial"
       animate="animate"
-      className="max-w-3xl mx-auto px-4 md:px-0"
+      className="relative max-w-3xl mx-auto px-4 md:px-0"
     >
       {/* Header */}
       <motion.div variants={staggerItem} className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-text-primary tracking-tight">Quiz</h2>
+          <h2 className="text-2xl font-bold text-text-primary tracking-tight">Quiz Assessment</h2>
           <p className="text-sm text-text-secondary mt-1">
             Question {questionIndex + 1} of {totalQuestions}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-text-secondary">
+        <div className="flex items-center gap-2 text-sm text-text-secondary font-mono bg-surface-50 px-3 py-1.5 rounded-lg border border-surface-border">
           <Clock size={16} />
           {formatDuration(elapsed)}
         </div>
       </motion.div>
 
-      {/* Progress Bar */}
+      {/* Animated Progress Bar */}
       <motion.div variants={staggerItem} className="mb-8">
-        <div className="h-1.5 bg-surface-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-surface-100 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-primary-500 rounded-full"
             animate={{ width: `${progress}%` }}
-            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+            transition={{ type: 'spring', stiffness: 180, damping: 22 }}
           />
         </div>
       </motion.div>
 
-      {/* Question */}
-      <motion.div variants={staggerItem} className="mb-8">
-        <div className="flex items-start gap-3 mb-2">
+      {/* Main Question Box (Shakes on Incorrect) */}
+      <motion.div
+        variants={staggerItem}
+        animate={isShaking ? { x: [-10, 10, -8, 8, -4, 4, 0] } : { x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8 p-6 rounded-2xl bg-surface-50 border border-surface-border"
+      >
+        <div className="flex items-start gap-3 mb-3">
           <span
             className={cn(
               'inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold flex-shrink-0',
@@ -219,7 +235,7 @@ function QuizQuestion({
             {question.difficulty}
           </span>
         </div>
-        <h3 className="text-lg md:text-xl font-semibold text-text-primary leading-relaxed">
+        <h3 className="text-lg md:text-xl font-bold text-text-primary leading-relaxed whitespace-normal break-words">
           {question.question}
         </h3>
       </motion.div>
@@ -239,32 +255,38 @@ function QuizQuestion({
               onClick={() => handleSelect(option)}
               disabled={isAnswered}
               className={cn(
-                'w-full flex items-center gap-4 p-4 rounded-xl',
-                'text-left text-sm font-medium',
-                'border-2 transition-all duration-200',
+                'w-full flex items-start gap-4 p-4 rounded-xl text-left text-sm font-medium border-2 transition-all duration-300 min-h-[56px]',
                 !showResult && [
                   'border-surface-border bg-surface-0',
-                  'hover:border-primary-300 hover:bg-primary-50/30 dark:hover:bg-primary-900/10',
-                  isSelected && 'border-primary-500 bg-primary-50 dark:bg-primary-900/20',
+                  'hover:border-primary-400 hover:bg-primary-50/30 dark:hover:bg-primary-950/20',
+                  isSelected && 'border-primary-500 bg-primary-50 dark:bg-primary-950/40',
                 ],
-                showResult && isCorrect && 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20',
-                showResult && isSelected && !isCorrect && 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20',
-                showResult && !isSelected && !isCorrect && 'border-surface-border opacity-50',
+                showResult && isCorrect && [
+                  'border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/30 text-emerald-950 dark:text-emerald-100',
+                  'shadow-[0_0_20px_rgba(16,185,129,0.25)]',
+                ],
+                showResult && isSelected && !isCorrect && [
+                  'border-rose-500 bg-rose-50/60 dark:bg-rose-950/30 text-rose-950 dark:text-rose-100',
+                  'shadow-[0_0_15px_rgba(244,63,94,0.2)]',
+                ],
+                showResult && !isSelected && !isCorrect && 'border-surface-border opacity-40'
               )}
               whileHover={!isAnswered ? { scale: 1.01 } : undefined}
               whileTap={!isAnswered ? { scale: 0.99 } : undefined}
             >
-              {/* Letter Badge */}
+              {/* Badge */}
               <span
                 className={cn(
-                  'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0',
+                  'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 transition-transform duration-200',
                   !showResult && 'bg-surface-100 text-text-secondary',
-                  showResult && isCorrect && 'bg-emerald-500 text-white',
+                  showResult && isCorrect && 'bg-emerald-500 text-white scale-110',
                   showResult && isSelected && !isCorrect && 'bg-rose-500 text-white',
                 )}
               >
                 {showResult && isCorrect ? (
-                  <CheckCircle2 size={16} />
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1.2 }} transition={{ duration: 0.2 }}>
+                    <Check size={16} />
+                  </motion.div>
                 ) : showResult && isSelected && !isCorrect ? (
                   <XCircle size={16} />
                 ) : (
@@ -272,27 +294,30 @@ function QuizQuestion({
                 )}
               </span>
 
-              <span className="flex-1 text-text-primary">{option}</span>
+              <span className="flex-1 font-medium whitespace-normal break-words leading-relaxed text-text-primary">{option}</span>
             </motion.button>
           );
         })}
       </motion.div>
 
-      {/* Explanation */}
+      {/* Explanation (Slides Upward) */}
       <AnimatePresence>
         {isAnswered && showExplanation && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-6 overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mb-6"
           >
-            <div className="p-4 rounded-xl bg-primary-50/50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800">
-              <div className="flex items-start gap-2">
-                <BookOpen size={16} className="text-primary-600 dark:text-primary-400 mt-0.5 flex-shrink-0" />
+            <div className="p-5 rounded-2xl bg-primary-50/60 dark:bg-primary-950/30 border border-primary-500/30">
+              <div className="flex items-start gap-3">
+                <BookOpen size={18} className="text-primary-500 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-xs font-semibold text-primary-700 dark:text-primary-300 mb-1">Explanation</p>
-                  <p className="text-sm text-text-secondary leading-relaxed">{question.explanation}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 mb-1">
+                    Explanation
+                  </p>
+                  <p className="text-sm text-text-primary leading-relaxed">{question.explanation}</p>
                 </div>
               </div>
             </div>
@@ -317,15 +342,15 @@ function QuizQuestion({
           <motion.button
             onClick={onNext}
             className={cn(
-              'flex items-center gap-2 px-5 py-2.5 rounded-xl',
+              'flex items-center gap-2 px-6 py-3 rounded-xl',
               'text-sm font-semibold text-white',
               'bg-primary-500 hover:bg-primary-600',
-              'transition-colors shadow-sm'
+              'transition-colors shadow-md'
             )}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
           >
-            {questionIndex === totalQuestions - 1 ? 'See Results' : 'Next Question'}
+            {questionIndex === totalQuestions - 1 ? 'See Assessment Results' : 'Next Question'}
             <ArrowRight size={16} />
           </motion.button>
         </motion.div>
@@ -342,10 +367,10 @@ function QuizResults() {
   const wrongAnswers = getWrongAnswers();
 
   const grade = useMemo(() => {
-    if (score.percentage >= 90) return { label: 'Excellent!', emoji: '🏆', color: 'text-emerald-500' };
-    if (score.percentage >= 70) return { label: 'Great Job!', emoji: '🎯', color: 'text-primary-500' };
-    if (score.percentage >= 50) return { label: 'Good Effort!', emoji: '💪', color: 'text-amber-500' };
-    return { label: 'Keep Practicing!', emoji: '📚', color: 'text-rose-500' };
+    if (score.percentage >= 90) return { label: 'Mastery Achieved!', icon: <Trophy size={48} className="text-amber-400 mx-auto" />, color: 'text-emerald-500' };
+    if (score.percentage >= 70) return { label: 'Great Performance!', icon: <Target size={48} className="text-primary-500 mx-auto" />, color: 'text-primary-500' };
+    if (score.percentage >= 50) return { label: 'Solid Effort!', icon: <Sparkles size={48} className="text-amber-500 mx-auto" />, color: 'text-amber-500' };
+    return { label: 'Practice Recommended', icon: <BookOpen size={48} className="text-rose-500 mx-auto" />, color: 'text-rose-500' };
   }, [score.percentage]);
 
   return (
@@ -355,9 +380,8 @@ function QuizResults() {
       animate="animate"
       className="max-w-lg mx-auto px-4 md:px-0 py-8"
     >
-      {/* Score Circle */}
       <motion.div variants={staggerItem} className="text-center mb-8">
-        <div className="text-5xl mb-3">{grade.emoji}</div>
+        <div className="mb-4">{grade.icon}</div>
         <h2 className={cn('text-2xl font-bold mb-2', grade.color)}>{grade.label}</h2>
 
         <div className="relative w-40 h-40 mx-auto my-6">
@@ -393,7 +417,6 @@ function QuizResults() {
         </div>
       </motion.div>
 
-      {/* Action Buttons */}
       <motion.div variants={staggerItem} className="flex flex-col gap-3">
         {wrongAnswers.length > 0 && (
           <motion.button
@@ -408,7 +431,7 @@ function QuizResults() {
             whileTap={{ scale: 0.97 }}
           >
             <RotateCcw size={18} />
-            Retry {wrongAnswers.length} Wrong Answer{wrongAnswers.length > 1 ? 's' : ''}
+            Retry {wrongAnswers.length} Incorrect Item{wrongAnswers.length > 1 ? 's' : ''}
           </motion.button>
         )}
 
@@ -416,8 +439,7 @@ function QuizResults() {
           onClick={resetQuiz}
           className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl text-sm font-medium text-text-secondary border border-surface-border hover:bg-surface-50 transition-colors"
         >
-          <Trophy size={18} />
-          Retake Full Quiz
+          Retake Full Assessment
         </button>
 
         <button

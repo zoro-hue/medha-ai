@@ -101,6 +101,7 @@ export interface QuizState {
   startedAt: number | null;
   timePerQuestion: number[];
   showExplanation: boolean;
+  retryQuestionIds?: string[];
 }
 
 // ─── Session Types ────────────────────────────────────────────────────────────
@@ -135,4 +136,4 @@ export interface AnalyticsData {
 
 export type Theme = 'light' | 'dark' | 'system';
 
-export type ViewMode = 'input' | 'flashcards' | 'quiz' | 'summary' | 'analytics' | 'history';
+export type ViewMode = 'home' | 'input' | 'flashcards' | 'quiz' | 'summary' | 'analytics' | 'history';

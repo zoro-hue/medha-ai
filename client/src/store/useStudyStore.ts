@@ -79,7 +79,7 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   // ─── Initial State ──────────────────────────────────────────────────────
   material: null,
   inputContent: '',
-  viewMode: 'input',
+  viewMode: 'home',
   isGenerating: false,
   error: null,
   generationMeta: null,
@@ -254,17 +254,29 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   },
 
   retryWrongAnswers: () => {
+    const { quiz } = get();
+    const wrongIds = quiz.answers.filter((a) => !a.isCorrect).map((a) => a.questionId);
     set({
       quiz: {
         ...initialQuizState,
         mode: 'retrying',
+        retryQuestionIds: wrongIds,
         startedAt: Date.now(),
+        currentIndex: 0,
       },
+      viewMode: 'quiz',
     });
   },
 
   resetQuiz: () => {
-    set({ quiz: { ...initialQuizState } });
+    set({
+      quiz: {
+        ...initialQuizState,
+        mode: 'taking',
+        startedAt: Date.now(),
+      },
+      viewMode: 'quiz',
+    });
   },
 
   setShowExplanation: (show) => {

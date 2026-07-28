@@ -8,7 +8,6 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  History,
   Trash2,
   Copy,
   Download,
@@ -18,8 +17,6 @@ import {
   X,
   MoreHorizontal,
   FileJson,
-  Layers,
-  Brain,
   Clock,
 } from 'lucide-react';
 import { cn, formatRelativeTime } from '@/lib/utils';
@@ -77,7 +74,7 @@ export const SessionHistory = memo(function SessionHistory() {
       variants={staggerContainer}
       initial="initial"
       animate="animate"
-      className="max-w-3xl mx-auto px-4 md:px-0"
+      className="relative max-w-3xl mx-auto px-4 md:px-0"
     >
       {/* Header */}
       <motion.div variants={staggerItem} className="flex items-start justify-between mb-8">
@@ -143,11 +140,10 @@ export const SessionHistory = memo(function SessionHistory() {
 
       {/* Session List */}
       {sessions.length === 0 ? (
-        <motion.div variants={staggerItem} className="text-center py-16">
-          <History size={48} className="mx-auto mb-4 text-text-tertiary opacity-30" />
-          <p className="text-lg font-medium text-text-secondary">No sessions yet</p>
+        <motion.div variants={staggerItem} className="text-center py-12 flex flex-col items-center justify-center">
+          <p className="text-lg font-medium text-text-secondary mt-2">No study sessions saved yet</p>
           <p className="text-sm text-text-tertiary mt-1">
-            Your generated study sets will appear here
+            Generate flashcards, quizzes, or summaries to view them in your history!
           </p>
         </motion.div>
       ) : (
@@ -186,13 +182,22 @@ interface SessionCardProps {
   onExport: () => void;
 }
 
+function getTopicEmoji(title: string): string {
+  const lower = title.toLowerCase();
+  if (lower.includes('bio') || lower.includes('cell') || lower.includes('gene')) return '🧬';
+  if (lower.includes('code') || lower.includes('binary') || lower.includes('data') || lower.includes('algo') || lower.includes('computer')) return '💻';
+  if (lower.includes('math') || lower.includes('calc') || lower.includes('algebra') || lower.includes('stat')) return '📐';
+  if (lower.includes('physic') || lower.includes('chem') || lower.includes('atom') || lower.includes('quantum')) return '⚡';
+  if (lower.includes('histor') || lower.includes('lit') || lower.includes('book') || lower.includes('read')) return '📖';
+  return '🧠';
+}
+
 function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onExport }: SessionCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(session.title);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -214,79 +219,92 @@ function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onEx
     ? Math.round((session.quizResults.filter((r) => r.isCorrect).length / session.quizResults.length) * 100)
     : null;
 
+  const topicEmoji = getTopicEmoji(session.title);
+
   return (
     <motion.div
       variants={staggerItem}
       className={cn(
-        'group relative p-4 rounded-xl',
+        'group relative p-4 rounded-2xl',
         'bg-surface-50 border border-surface-border',
-        'hover:shadow-md transition-all duration-200',
+        'hover:border-primary-300 hover:shadow-md transition-all duration-200',
         'cursor-pointer',
         showMenu && 'z-30'
       )}
       onClick={onRestore}
       whileHover={{ y: -1 }}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          {/* Title */}
-          {isEditing ? (
-            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSaveTitle()}
-                className="flex-1 px-2 py-1 rounded-lg bg-surface-0 border border-primary-300 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500"
-                autoFocus
-              />
-              <button onClick={handleSaveTitle} className="p-1 text-emerald-500">
-                <Check size={16} />
-              </button>
-              <button onClick={() => setIsEditing(false)} className="p-1 text-text-tertiary">
-                <X size={16} />
-              </button>
-            </div>
-          ) : (
-            <h3 className="text-sm font-semibold text-text-primary truncate">{session.title}</h3>
-          )}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+          {/* Topic Icon Avatar */}
+          <div className="w-11 h-11 rounded-2xl bg-surface-0 border border-surface-border shadow-xs flex items-center justify-center text-xl shrink-0">
+            {topicEmoji}
+          </div>
 
-          {/* Meta */}
-          <div className="flex items-center gap-3 mt-1.5">
-            <span className="flex items-center gap-1 text-xs text-text-tertiary">
-              <Clock size={12} />
-              {formatRelativeTime(session.createdAt)}
-            </span>
-            <span className="flex items-center gap-1 text-xs text-text-tertiary">
-              <Layers size={12} />
-              {session.material.flashcards.length} cards
-            </span>
-            <span className="flex items-center gap-1 text-xs text-text-tertiary">
-              <Brain size={12} />
-              {session.material.quiz.length} questions
-            </span>
-            {accuracy !== null && (
-              <span className={cn(
-                'text-xs font-medium',
-                accuracy >= 70 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
-              )}>
-                {accuracy}% accuracy
-              </span>
+          <div className="min-w-0 flex-1">
+            {/* Title */}
+            {isEditing ? (
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSaveTitle()}
+                  className="flex-1 px-2.5 py-1 rounded-xl bg-surface-0 border border-primary-300 text-sm text-text-primary focus:outline-none"
+                  autoFocus
+                />
+                <button onClick={handleSaveTitle} className="p-1 text-emerald-500">
+                  <Check size={16} />
+                </button>
+                <button onClick={() => setIsEditing(false)} className="p-1 text-text-tertiary">
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <h3 className="text-sm font-bold text-text-primary truncate flex items-center gap-2">
+                {session.title}
+              </h3>
             )}
+
+            {/* Meta Tags: Status | Date | Score | Cards */}
+            <div className="flex items-center flex-wrap gap-2 mt-1.5 text-xs">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+                Completed
+              </span>
+
+              <span className="text-text-tertiary flex items-center gap-1 text-[11px]">
+                <Clock size={11} />
+                {formatRelativeTime(session.createdAt)}
+              </span>
+
+              {accuracy !== null ? (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold text-[11px]">
+                  Score {accuracy}%
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-surface-200/50 text-text-tertiary text-[11px]">
+                  Score --
+                </span>
+              )}
+
+              <span className="text-text-tertiary text-[11px]">
+                • {session.material.flashcards.length} cards
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Actions Menu */}
-        <div className="relative" ref={menuRef} onClick={(e) => e.stopPropagation()}>
+        <div className="relative shrink-0" ref={menuRef} onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => setShowMenu(!showMenu)}
             className={cn(
-              'p-1.5 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-surface-200/60 transition-all',
-              showMenu ? 'opacity-100 bg-surface-200/60 text-text-primary' : 'opacity-0 group-hover:opacity-100'
+              'p-2 rounded-xl text-text-tertiary hover:text-text-primary hover:bg-surface-200/60 transition-all',
+              showMenu ? 'opacity-100 bg-surface-200/60 text-text-primary' : 'opacity-80 group-hover:opacity-100'
             )}
             aria-label="Session actions"
           >
-            <MoreHorizontal size={16} />
+            <MoreHorizontal size={18} />
           </button>
 
           <AnimatePresence>
@@ -297,7 +315,7 @@ function SessionCard({ session, onRestore, onDelete, onDuplicate, onRename, onEx
                 exit={{ opacity: 0, scale: 0.95, y: -4 }}
                 transition={{ duration: 0.15 }}
                 className={cn(
-                  'absolute right-0 top-9 z-50 w-44',
+                  'absolute right-0 top-10 z-50 w-44',
                   'bg-surface-0 border border-surface-border',
                   'rounded-xl shadow-xl overflow-hidden py-1'
                 )}

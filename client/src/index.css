@@ -79,23 +79,23 @@
 /* ─── Dark Mode ─────────────────────────────────────────────────────────────── */
 
 .dark {
-  --color-surface-0: oklch(0.13 0.01 270);
-  --color-surface-50: oklch(0.16 0.012 270);
-  --color-surface-100: oklch(0.19 0.014 270);
-  --color-surface-200: oklch(0.23 0.016 270);
-  --color-surface-300: oklch(0.28 0.016 270);
-  --color-surface-border: oklch(0.25 0.012 270);
+  --color-surface-0: oklch(0.12 0.015 270);
+  --color-surface-50: oklch(0.15 0.018 270);
+  --color-surface-100: oklch(0.18 0.02 270);
+  --color-surface-200: oklch(0.22 0.022 270);
+  --color-surface-300: oklch(0.27 0.025 270);
+  --color-surface-border: oklch(0.26 0.02 270);
 
-  --color-text-primary: oklch(0.95 0.005 270);
-  --color-text-secondary: oklch(0.70 0.015 270);
-  --color-text-tertiary: oklch(0.55 0.01 270);
-  --color-text-inverse: oklch(0.13 0.01 270);
+  --color-text-primary: oklch(0.97 0.005 270);
+  --color-text-secondary: oklch(0.75 0.018 270);
+  --color-text-tertiary: oklch(0.60 0.015 270);
+  --color-text-inverse: oklch(0.12 0.015 270);
 
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
-  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
-  --shadow-lg: 0 8px 24px oklch(0 0 0 / 0.4);
-  --shadow-xl: 0 16px 48px oklch(0 0 0 / 0.5);
-  --shadow-glow: 0 0 32px oklch(0.55 0.22 270 / 0.25);
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px oklch(0 0 0 / 0.5);
+  --shadow-lg: 0 8px 32px oklch(0 0 0 / 0.6);
+  --shadow-xl: 0 16px 48px oklch(0 0 0 / 0.7);
+  --shadow-glow: 0 0 32px oklch(0.55 0.22 270 / 0.35);
 }
 
 /* ─── Keyframe Animations ───────────────────────────────────────────────────── */
@@ -146,10 +146,18 @@ body {
 
 /* ─── Focus Styles ──────────────────────────────────────────────────────────── */
 
-*:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+*:focus, *:focus-visible {
+  outline: none !important;
+  box-shadow: none;
+}
+
+input, textarea, button, select, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+  outline: none !important;
+  box-shadow: none;
 }
 
 /* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
@@ -211,4 +219,43 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ─── Medhā Tutor Permanent UI Companion CSS ──────────────────────────────────── */
+
+.medha-tutor {
+  width: auto;
+  image-rendering: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  z-index: 4;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.18));
+  animation: medhaFloat 3.5s ease-in-out infinite, medhaBreathe 4s ease-in-out infinite;
+}
+
+.medha-tutor-home {
+  height: clamp(280px, 24vw, 360px);
+}
+
+.medha-tutor-default {
+  height: clamp(260px, 20vw, 360px);
+}
+
+.medha-tutor-celebrate {
+  height: clamp(280px, 22vw, 340px);
+}
+
+.medha-tutor-peek {
+  height: clamp(240px, 18vw, 300px);
+}
+
+@keyframes medhaFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes medhaBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
 }

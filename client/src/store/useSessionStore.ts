@@ -9,6 +9,8 @@ import { create } from 'zustand';
 import type { StudySession, StudyMaterial, QuizAnswer } from '@/types';
 import { generateId, storage } from '@/lib/utils';
 
+import { useStudyStore } from './useStudyStore';
+
 const STORAGE_KEY = 'studyforge_sessions';
 
 interface SessionStore {
@@ -108,7 +110,12 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   restoreSession: (id) => {
-    return get().sessions.find((s) => s.id === id) || null;
+    const session = get().sessions.find((s) => s.id === id) || null;
+    if (session) {
+      useStudyStore.getState().setMaterial(session.material);
+      useStudyStore.getState().setInputContent(session.inputContent);
+    }
+    return session;
   },
 
   exportSession: (id) => {

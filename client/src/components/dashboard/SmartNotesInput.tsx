@@ -18,6 +18,7 @@ import {
   Hash,
   Type,
   ChevronDown,
+  Clock,
 } from 'lucide-react';
 import { cn, countWords, estimateTokens } from '@/lib/utils';
 import { useStudyStore } from '@/store/useStudyStore';
@@ -38,11 +39,54 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
   const [flashcardCount, setFlashcardCount] = useState(10);
   const [quizCount, setQuizCount] = useState(5);
 
+  const sampleTemplates = [
+    {
+      label: 'Biology',
+      text: 'Photosynthesis is the biological process by which green plants and algae convert light energy from the sun into chemical energy stored as glucose. Chlorophyll absorbs sunlight in thylakoid membranes within chloroplasts, splitting water molecules into hydrogen ions and releasing oxygen as a byproduct.',
+    },
+    {
+      label: 'Computer Science',
+      text: 'QuickSort is a divide-and-conquer algorithm that selects a pivot element and partitions the array into two sub-arrays. MergeSort is a stable sorting algorithm with O(n log n) time complexity that recursively splits the array into halves and merges sorted sub-arrays.',
+    },
+    {
+      label: 'Medicine',
+      text: 'Cellular respiration converts biochemical energy from nutrients into ATP through glycolysis, the Krebs cycle, and electron transport chain. Mitochondria act as the powerhouse of eukaryotic cells producing approximately 36 to 38 ATP molecules per glucose molecule.',
+    },
+  ];
+
   const charCount = inputContent.length;
   const wordCount = countWords(inputContent);
   const tokenEstimate = estimateTokens(inputContent);
+  const readingTimeMin = Math.max(1, Math.ceil(wordCount / 200));
   const isValid = charCount >= MIN_CHARS && charCount <= MAX_CHARS;
   const charPercentage = Math.min((charCount / MAX_CHARS) * 100, 100);
+
+  // Load draft on mount
+  useEffect(() => {
+    if (!inputContent) {
+      const saved = localStorage.getItem('studyforge_notes_draft');
+      if (saved) setInputContent(saved);
+    }
+  }, [inputContent, setInputContent]);
+
+  const handleTextChange = (text: string) => {
+    const sliced = text.slice(0, MAX_CHARS);
+    setInputContent(sliced);
+    try {
+      localStorage.setItem('studyforge_notes_draft', sliced);
+    } catch {
+      // Ignore quota errors
+    }
+  };
+
+  const handleClearText = () => {
+    setInputContent('');
+    try {
+      localStorage.removeItem('studyforge_notes_draft');
+    } catch {
+      // Ignore errors
+    }
+  };
 
   // Auto-resize textarea
   useEffect(() => {
@@ -99,15 +143,37 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
       animate="animate"
       className="max-w-3xl mx-auto px-4 md:px-0"
     >
-      {/* Header */}
-      <motion.div variants={staggerItem} className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-text-primary tracking-tight mb-3">
+      {/* Header & Templates */}
+      <motion.div variants={staggerItem} className="mb-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-text-primary tracking-tight mb-2">
           Create Study Set
         </h1>
-        <p className="text-base text-text-secondary leading-relaxed max-w-xl">
+        <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-4">
           Paste your notes, a paragraph, or any study material. The AI will generate
           interactive flashcards, quizzes, and summaries.
         </p>
+
+        {/* Sample Templates */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-text-tertiary font-medium">Try template:</span>
+          {sampleTemplates.map((template) => (
+            <button
+              key={template.label}
+              onClick={() => handleTextChange(template.text)}
+              className="px-3 py-1 rounded-full text-xs font-medium bg-surface-100 hover:bg-surface-200 text-text-secondary hover:text-text-primary transition-colors border border-surface-border"
+            >
+              {template.label}
+            </button>
+          ))}
+          {inputContent && (
+            <button
+              onClick={handleClearText}
+              className="px-3 py-1 rounded-full text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors ml-auto flex items-center gap-1"
+            >
+              <X size={12} /> Clear Text
+            </button>
+          )}
+        </div>
       </motion.div>
 
       {/* Text Input Area */}
@@ -147,7 +213,7 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
         <textarea
           ref={textareaRef}
           value={inputContent}
-          onChange={(e) => setInputContent(e.target.value.slice(0, MAX_CHARS))}
+          onChange={(e) => handleTextChange(e.target.value)}
           placeholder="Paste your study notes, lecture content, textbook chapter, or describe a topic you want to learn..."
           className={cn(
             'w-full min-h-[200px] max-h-[500px] p-5 pb-3',
@@ -169,6 +235,10 @@ export const SmartNotesInput = memo(function SmartNotesInput() {
             <span className="flex items-center gap-1.5">
               <Type size={13} />
               {wordCount} words
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Clock size={13} />
+              ~{readingTimeMin} min read
             </span>
             <span className="flex items-center gap-1.5">
               <Hash size={13} />

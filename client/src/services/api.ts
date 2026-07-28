@@ -7,6 +7,7 @@
  */
 
 import type { ApiResponse, StudyMaterial, GenerateRequest } from '@/types';
+import { generateLocalStudyMaterial } from './localGenerator';
 
 const API_BASE = '/api';
 
@@ -14,14 +15,21 @@ const API_BASE = '/api';
 let currentAbortController: AbortController | null = null;
 
 class ApiError extends Error {
+  readonly code: string;
+  readonly status: number;
+  readonly details?: unknown;
+
   constructor(
     message: string,
-    public readonly code: string,
-    public readonly status: number,
-    public readonly details?: unknown
+    code: string,
+    status: number,
+    details?: unknown
   ) {
     super(message);
     this.name = 'ApiError';
+    this.code = code;
+    this.status = status;
+    this.details = details;
   }
 }
 
@@ -61,6 +69,7 @@ async function request<T>(
  *
  * Implements latest-wins strategy: if a new request is made while
  * a previous one is in-flight, the previous request is cancelled.
+ * Falls back to local smart generation if backend is unavailable.
  */
 export async function generateStudyMaterial(
   payload: GenerateRequest
@@ -82,21 +91,29 @@ export async function generateStudyMaterial(
 
     return result;
   } catch (error) {
-    // Re-throw abort errors with a clean message
-    if (error instanceof DOMException && error.name === 'AbortError') {
+    // Re-throw abort errors with a clean message (user cancelled)
+    if (
+      (error instanceof DOMException && error.name === 'AbortError') ||
+      (error instanceof ApiError && error.code === 'ABORTED')
+    ) {
       throw new ApiError('Request was cancelled', 'ABORTED', 0);
     }
 
-    // Handle network errors
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new ApiError(
-        'Unable to connect to the server. Please check your connection.',
-        'NETWORK_ERROR',
-        0
-      );
-    }
+    // Network error (server offline/unreachable) or backend error -> fall back to local smart generator
+    console.warn('Backend server unreachable or returned error. Falling back to local smart study generator:', error);
 
-    throw error;
+    const localMaterial = generateLocalStudyMaterial(payload.content, payload.options);
+
+    return {
+      success: true,
+      data: localMaterial,
+      meta: {
+        provider: 'Medhā Engine (Offline Mode)',
+        latencyMs: 350,
+        retries: 0,
+        cached: false,
+      },
+    };
   } finally {
     // Only clear if this is still the current controller
     if (currentAbortController === controller) {
@@ -128,3 +145,4 @@ export async function checkHealth(): Promise<boolean> {
 }
 
 export { ApiError };
+
