@@ -68,28 +68,28 @@ const VIEW_ORDER: ViewMode[] = [
   'history',
 ];
 
-const verticalSpatialVariants = {
+const cylinderReelVariants = {
   initial: (isGoingDown: boolean) => ({
-    // Circular arc entrance: rotates along X and Z axes for orbital feel
-    y: isGoingDown ? 180 : -180,
-    rotateX: isGoingDown ? -22 : 22,
-    rotateZ: isGoingDown ? -4 : 4,
-    scale: 0.90,
+    // 3D Cylinder Reel Entrance: enters along bottom/top curve of cylinder
+    y: isGoingDown ? '60%' : '-60%',
+    rotateX: isGoingDown ? -65 : 65,
+    z: -250,
+    scale: 0.9,
     opacity: 0,
   }),
   animate: {
-    y: 0,
+    y: '0%',
     rotateX: 0,
-    rotateZ: 0,
+    z: 0,
     scale: 1,
     opacity: 1,
   },
   exit: (isGoingDown: boolean) => ({
-    // Reverse circular arc exit
-    y: isGoingDown ? -180 : 180,
-    rotateX: isGoingDown ? 22 : -22,
-    rotateZ: isGoingDown ? 4 : -4,
-    scale: 0.90,
+    // 3D Cylinder Reel Exit: rolls out along top/bottom curve of cylinder
+    y: isGoingDown ? '-60%' : '60%',
+    rotateX: isGoingDown ? 65 : -65,
+    z: -250,
+    scale: 0.9,
     opacity: 0,
   }),
 };
@@ -178,21 +178,26 @@ function AppContent() {
           <Sidebar onOpenSearch={() => setIsSearchOpen(true)} />
 
           {/* Main Content View Container - Isolated Scroll Area */}
-          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8" style={{ perspective: 1400 }}>
-            <div className="py-8 md:py-12 min-h-full">
-              <AnimatePresence mode="wait" custom={isGoingDown}>
+          <main className="flex-1 h-full overflow-y-auto pb-24 md:pb-8 relative" style={{ perspective: 1200 }}>
+            <div className="py-8 md:py-12 min-h-full relative overflow-hidden">
+              <AnimatePresence mode="popLayout" custom={isGoingDown}>
                 <motion.div
                   key={viewMode}
                   custom={isGoingDown}
-                  variants={verticalSpatialVariants}
+                  variants={cylinderReelVariants}
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   transition={{
-                    duration: 0.45,
-                    ease: [0.16, 1, 0.3, 1],
+                    duration: 0.48,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
-                  style={{ transformStyle: 'preserve-3d', willChange: 'transform, opacity' }}
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    willChange: 'transform, opacity',
+                    transformOrigin: 'center center -300px',
+                  }}
+                  className="w-full"
                 >
                   {renderView()}
                 </motion.div>

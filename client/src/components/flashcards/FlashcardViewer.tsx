@@ -287,7 +287,7 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
           </motion.div>
 
           {/* Active Card Container with Hardware-Accelerated 3D Motion */}
-          <AnimatePresence mode="wait" custom={direction}>
+          <AnimatePresence mode="popLayout" custom={direction}>
             <motion.div
               key={currentCard.id}
               custom={direction}
@@ -296,14 +296,18 @@ export const FlashcardViewer = memo(function FlashcardViewer() {
               animate="animate"
               exit="exit"
               transition={{
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
+                duration: 0.55,
+                ease: [0.22, 1, 0.36, 1],
               }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.2}
               onDragEnd={handleDragEnd}
-              style={{ willChange: 'transform', transformStyle: 'preserve-3d' }}
+              style={{
+                willChange: 'transform, opacity',
+                transformStyle: 'preserve-3d',
+                transformOrigin: 'center center -200px',
+              }}
               className="relative w-full max-w-lg md:max-w-xl cursor-pointer select-none z-20 mx-auto"
               onClick={flipCard}
               onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && flipCard()}
