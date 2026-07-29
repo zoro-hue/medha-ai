@@ -16,6 +16,7 @@
   --color-primary-700: oklch(0.40 0.20 270);
   --color-primary-800: oklch(0.34 0.16 270);
   --color-primary-900: oklch(0.28 0.12 270);
+  --color-primary-950: oklch(0.20 0.10 270);
 
   /* Accent palette — Warm amber */
   --color-accent-400: oklch(0.82 0.14 75);
