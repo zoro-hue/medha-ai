@@ -236,7 +236,12 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
     const { quiz, material } = get();
     if (!material) return;
 
-    const isLast = quiz.currentIndex >= material.quiz.length - 1;
+    const totalQuestions =
+      quiz.mode === 'retrying' && quiz.retryQuestionIds && quiz.retryQuestionIds.length > 0
+        ? quiz.retryQuestionIds.length
+        : material.quiz.length;
+
+    const isLast = quiz.currentIndex >= totalQuestions - 1;
 
     if (isLast) {
       set({
