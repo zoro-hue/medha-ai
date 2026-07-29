@@ -27,5 +27,8 @@ npm-debug.log*
 # Test coverage
 coverage/
 
-# PDF assignment
-FLAM.pdf
+# Media & Recordings
+*.mp4
+*.webm
+*.avi
+

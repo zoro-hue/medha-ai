@@ -122,24 +122,31 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     const session = get().sessions.find((s) => s.id === id);
     if (!session) return;
 
-    const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
+    const safeTitle = session.title.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
+    const jsonString = JSON.stringify(session, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `studyforge-${session.title.replace(/\s+/g, '-').toLowerCase()}.json`;
+    a.download = `medha-${safeTitle || 'session'}.json`;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 
   exportAllSessions: () => {
     const sessions = get().sessions;
-    const blob = new Blob([JSON.stringify(sessions, null, 2)], { type: 'application/json' });
+    const jsonString = JSON.stringify(sessions, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `studyforge-all-sessions-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `medha-all-sessions-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 
   importSessions: (json) => {
@@ -147,7 +154,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     let imported = 0;
 
     try {
-      const parsed = JSON.parse(json);
+      const cleanJson = json.replace(/^\uFEFF/, '').trim();
+      const parsed = JSON.parse(cleanJson);
       const items = Array.isArray(parsed) ? parsed : [parsed];
 
       const newSessions: StudySession[] = [];
