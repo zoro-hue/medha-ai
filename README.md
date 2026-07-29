@@ -1,4 +1,4 @@
-# 🧠 StudyForge — AI Study Assistant
+# 🧠 Medhā — AI Study Assistant
 
 > Transform your notes into interactive flashcards, quizzes, and structured study materials powered by AI.
 
@@ -6,12 +6,19 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript)](https://typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-8-purple?logo=vite)](https://vite.dev)
 [![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-green?logo=google)](https://ai.google.dev)
+[![Demo Video](https://img.shields.io/badge/Google_Drive-Watch_Demo_Video-blue?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1XSBEmfParB5PbkX4xXz51yAg6E_ymg4j/view?usp=sharing)
+
+---
+
+## 🎬 Demo Video
+
+📹 **[Watch the Live Walkthrough & Feature Demo on Google Drive](https://drive.google.com/file/d/1XSBEmfParB5PbkX4xXz51yAg6E_ymg4j/view?usp=sharing)**
 
 ---
 
 ## 📋 Overview
 
-StudyForge is an AI-powered study assistant that takes **free-form text input** (notes, paragraphs, topics, chapters, or lecture content) and generates **structured, interactive learning materials** — not a chatbot.
+Medhā is an AI-powered study assistant that takes **free-form text input** (notes, paragraphs, topics, chapters, or lecture content) and generates **structured, interactive learning materials** — not a chatbot.
 
 The AI returns **strict JSON** which the frontend parses and renders as **interactive React components**: flashcards with flip animations, multiple-choice quizzes with instant feedback, mind maps, key points, and revision tips.
 
